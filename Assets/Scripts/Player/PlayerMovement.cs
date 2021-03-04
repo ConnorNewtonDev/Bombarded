@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController _controller;
     private PlayerAnimator _animator;
+    private Rigidbody _rb3d;
     private ControlScheme _controlScheme;
     private float dashCD = 0f;
     private bool dashing = false;
@@ -26,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _animator = GetComponent<PlayerAnimator>();
+        _rb3d = GetComponent<Rigidbody>();
     }
 
     // Start is called before the first frame update
@@ -113,6 +115,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 #endregion
+
+    public void ToggleRigidbodyMode(bool state)
+    {
+        _controller.enabled = !state;
+        _rb3d.isKinematic = !state;
+
+    }
 
     enum ControlScheme
     {

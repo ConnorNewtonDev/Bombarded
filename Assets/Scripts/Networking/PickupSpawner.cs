@@ -29,8 +29,8 @@ namespace Networking
         {
             if (!PickupReady)
             {
-                spawnCooldown -= Time.deltaTime;
-                if (spawnCooldown <= 0)
+                _cooldown -= Time.deltaTime;
+                if (_cooldown <= 0)
                     SetPickup();
             }
         }

@@ -4,11 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"int\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"bombID\"]]")]
+	[GeneratedRPC("{\"types\":[[\"int\"][][\"float\", \"Vector3\", \"float\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"bombID\"][][\"force\", \"position\", \"radius\"]]")]
 	public abstract partial class PlayerBehavior : NetworkBehavior
 	{
 		public const byte RPC_SET_HELD_BOMB = 0 + 5;
+		public const byte RPC_THROW_BOMB = 1 + 5;
+		public const byte RPC_KNOCKBACK = 2 + 5;
 		
 		public PlayerNetworkObject networkObject = null;
 
@@ -23,6 +25,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("SetHeldBomb", SetHeldBomb, typeof(int));
+			networkObject.RegisterRpc("ThrowBomb", ThrowBomb);
+			networkObject.RegisterRpc("Knockback", Knockback, typeof(float), typeof(Vector3), typeof(float));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -104,6 +108,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// int bombID
 		/// </summary>
 		public abstract void SetHeldBomb(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void ThrowBomb(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void Knockback(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}
