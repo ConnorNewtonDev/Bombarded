@@ -13,15 +13,15 @@ namespace Networking
         public BombType bombType;
         public float spawnCooldown;
 
-        public bool PickupReady { get; private set; } = false;
+        public bool PickupReady { get; private set; } = true;
     
         // Start is called before the first frame update
         void Start()
         {
             if (!NetworkManager.Instance.IsServer)
                 enabled = false;
-        
-            SetPickup();
+            else
+                SetPickup();
         }
 
         // Update is called once per frame

@@ -61,7 +61,7 @@ namespace Player
         {
             Debug.Log("FIRE");
             if (IsHoldingBomb())
-            {
+            { 
                 networkObject.SendRpc(RPC_THROW_BOMB, Receivers.All);
             }
         }
@@ -77,15 +77,16 @@ namespace Player
         {
             var bombType = args.GetNext<int>();
             var bomb = BombCollection.instance.GetBomb(bombType);
-            Instantiate(bomb, bombAnchor);
+            var spawn = Instantiate(bomb, bombAnchor);
+            spawn.GetComponent<Collider>().enabled = false;
+
         }
 
         public override void ThrowBomb(RpcArgs args)
         {
             Destroy(bombAnchor.GetChild(0).gameObject);
+            
             var bomb = Instantiate(BombCollection.instance.GetBomb(activeBomb), bombAnchor.position, bombAnchor.rotation);
-            if (networkObject.IsOwner)
-                bomb.GetComponent<Bomb>().enabled = true;
             var rb3d = bomb.AddComponent<Rigidbody>();
             rb3d.useGravity = true;
             rb3d.AddForce(transform.TransformDirection(throwForce));
@@ -94,7 +95,6 @@ namespace Player
 
         public void Knockback(float force, Vector3 position, float radius)
         {
-            position += -Vector3.up *2;
             networkObject.SendRpc(RPC_KNOCKBACK, Receivers.Owner, force, position, radius);
         }
         
@@ -107,7 +107,11 @@ namespace Player
             if (networkObject.IsOwner)
             {
                 _movement.ToggleRigidbodyMode(true);
-                _rb3d.AddExplosionForce(force, origin, radius, 1f, ForceMode.VelocityChange);
+                var dir = transform.position - origin;
+                dir.Normalize();
+                dir.y = 0.5f;
+                _rb3d.AddForce(dir * force, ForceMode.VelocityChange);
+              
                 networkObject.SendRpc(RPC_KNOCKBACK, Receivers.Others, force, origin, radius);
                 LeanTween.delayedCall(1f, () =>_movement.ToggleRigidbodyMode(false));
             }

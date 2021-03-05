@@ -14,6 +14,7 @@ namespace Networking
         {
             if (taken)
                 return;
+            
             if (other.CompareTag("Player"))
             {
                 var pStats = other.GetComponent<PlayerStats>();
