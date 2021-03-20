@@ -53,7 +53,8 @@ namespace Player
             }
             else if(_netMovement)
             {
-                _netMovement.UpdatePositionAndRotation(networkObject.position, networkObject.rotation);
+                if(!knockedUp)
+                    _netMovement.UpdatePositionAndRotation(networkObject.position, networkObject.rotation);
             }
         }
 
@@ -113,12 +114,29 @@ namespace Player
                 _rb3d.AddForce(dir * force, ForceMode.VelocityChange);
               
                 networkObject.SendRpc(RPC_KNOCKBACK, Receivers.Others, force, origin, radius);
-                LeanTween.delayedCall(1f, () =>_movement.ToggleRigidbodyMode(false));
             }
-            
+            else if (!networkObject.IsServer)
+            {
+                _movement.ToggleRigidbodyMode(true);
+                var dir = transform.position - origin;
+                dir.Normalize();
+                dir.y = 0.5f;
+                _rb3d.AddForce(dir * force, ForceMode.VelocityChange);
+            }
+
+            knockedUp = true;
+
             // Set knockback animation
         }
 
-
+        private void OnCollisionEnter(Collision other)
+        {
+            if (knockedUp)
+            {
+                _movement.ToggleRigidbodyMode(false);
+                knockedUp = false;
+            }
+        }
+        
     }
 }

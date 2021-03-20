@@ -25,7 +25,8 @@ public class MultiplayerMenu : MonoBehaviour
 	public GameObject[] ToggledButtons;
 	private NetworkManager mgr = null;
 	private NetWorker server;
-
+	private int _targetScene = 1;
+	
 	private List<Button> _uiButtons = new List<Button>();
 	private bool _matchmaking = false;
 	public bool useMainThreadManagerForRPCs = true;
@@ -37,8 +38,13 @@ public class MultiplayerMenu : MonoBehaviour
 
 	private void Start()
 	{
+		ipAddress.text = "34.105.225.96";
+		
+#if UNITY_SERVER
 		ipAddress.text = "127.0.0.1";
+#endif
 		portNumber.text = "15937";
+	
 
 		for (int i = 0; i < ToggledButtons.Length; ++i)
 		{
@@ -56,15 +62,13 @@ public class MultiplayerMenu : MonoBehaviour
 		if (useMainThreadManagerForRPCs)
 			Rpc.MainThreadRunner = MainThreadManager.Instance;
 
-		if (getLocalNetworkConnections)
-		{
-			NetWorker.localServerLocated += LocalServerLocated;
-			NetWorker.RefreshLocalUdpListings(ushort.Parse(portNumber.text));
-		}
-		
-		#if Unity_SERVER
+#if UNITY_SERVER
+			_targetScene = CommandLineInfo.GetTargetScene();
+			Debug.Log($"Target Scene Index: {_targetScene}");
+
 			Host();
-		#endif
+#endif		
+
 	}
 
 	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
@@ -74,6 +78,7 @@ public class MultiplayerMenu : MonoBehaviour
 
 	public void Connect()
 	{
+		Debug.Log("CONNECT");
 		if (connectUsingMatchmaking)
 		{
 			ConnectToMatchmaking();
@@ -91,15 +96,17 @@ public class MultiplayerMenu : MonoBehaviour
 		if (useTCP)
 		{
 			client = new TCPClient();
-			((TCPClient)client).Connect(ipAddress.text, (ushort)port);
+			Debug.Log($"Connecting to: {ipAddress.text.Trim()} port {port}");
+			((TCPClient)client).Connect(ipAddress.text.Trim(), (ushort)port);
 		}
 		else
 		{
 			client = new UDPClient();
+			Debug.Log($"Connecting to: {ipAddress.text.Trim()} port {port}");
 			if (natServerHost.Trim().Length == 0)
-				((UDPClient)client).Connect(ipAddress.text, (ushort)port);
+				((UDPClient)client).Connect(ipAddress.text.Trim(), (ushort)port);
 			else
-				((UDPClient)client).Connect(ipAddress.text, (ushort)port, natServerHost, natServerPort);
+				((UDPClient)client).Connect(ipAddress.text.Trim(), (ushort)port, natServerHost, natServerPort);
 		}
 
 		Connected(client);
@@ -159,7 +166,11 @@ public class MultiplayerMenu : MonoBehaviour
 			Debug.Log("Player " + player.NetworkId + " timed out");
 		};
 		//LobbyService.Instance.Initialize(server);
-
+		
+		#if UNITY_EDITOR || DEVELOPMENT_BUILD
+		_targetScene = 1;
+		#endif
+		
 		Connected(server);
 	}
 
@@ -170,7 +181,7 @@ public class MultiplayerMenu : MonoBehaviour
 
 	public void Connected(NetWorker networker)
 	{
-		if (!networker.IsBound)
+		if(!networker.IsBound)
 		{
 			Debug.LogError("NetWorker failed to bind");
 			return;
@@ -203,7 +214,7 @@ public class MultiplayerMenu : MonoBehaviour
 		if (networker is IServer)
 		{
 			if (!DontChangeSceneOnConnect)
-				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+				SceneManager.LoadScene(1);
 			else
 				NetworkObject.Flush(networker); //Called because we are already in the correct scene!
 		}

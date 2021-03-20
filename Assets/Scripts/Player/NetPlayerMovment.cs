@@ -7,6 +7,8 @@ using UnityEngine;
 public class NetPlayerMovment : MonoBehaviour
 {
     private PlayerAnimator _animator;
+    public float posDampening = 1f;
+    public float rotDampening = 1f;
 
     private void Awake()
     {
@@ -23,8 +25,11 @@ public class NetPlayerMovment : MonoBehaviour
         
     }
 
-    public void UpdatePositionAndRotation(Vector3 pos, Quaternion rotation)
+    public void UpdatePositionAndRotation(Vector3 pos, Quaternion rot)
     {
-        transform.SetPositionAndRotation(pos, rotation);
+        var position = Vector3.Lerp(transform.position, pos, posDampening);
+        var rotation = Quaternion.Lerp(transform.rotation, rot, rotDampening);
+        
+        transform.SetPositionAndRotation(position, rotation);
     }
 }

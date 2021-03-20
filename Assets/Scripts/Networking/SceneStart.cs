@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class SceneStart : MonoBehaviour
 {
+    public GameObject spawners;
     private void Start()
     {
         if (!NetworkManager.Instance.IsServer)
@@ -21,7 +22,8 @@ public class SceneStart : MonoBehaviour
             SpawnPlayer();
             #endif
         }
-
+        
+        spawners.SetActive(true);
         InitNetwork();
     }
 
@@ -50,6 +52,7 @@ public class SceneStart : MonoBehaviour
             obj.Owner.disconnected += (sender) =>
             {
                 obj.Destroy();
+                Debug.Log($"Player object destroyed for user {obj.Owner.NetworkId}");
             };
         }
     }

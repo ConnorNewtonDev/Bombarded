@@ -1,3 +1,4 @@
+using System;
 using BeardedManStudios.Forge.Networking;
 using Player;
 using UnityEngine;
@@ -9,8 +10,9 @@ namespace Bombs
         public float radius = 10.5f;
         public float knockbackForce = 1000f;
         public uint spawnerID;
+        public GameObject destroySpawn;
         private AudioSource _source;
-    
+        
         // Start is called before the first frame update
         void Awake()
         {
@@ -43,9 +45,18 @@ namespace Bombs
                 }
             }
 
+            SpawnEffect();
+
             _source.PlayOneShot(_source.clip);
             GetComponent<MeshRenderer>().enabled = false;
             Destroy(gameObject, 1f);
         }
+
+        private void SpawnEffect()
+        {
+            var effect = Instantiate(destroySpawn, transform.position, transform.rotation, null);
+            Destroy(effect, 5f);
+        }
+        
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedInterpol("{\"inter\":[0,0]")]
+	[GeneratedInterpol("{\"inter\":[0.05,0.05]")]
 	public partial class PlayerNetworkObject : NetworkObject
 	{
 		public const int IDENTITY = 3;
@@ -18,7 +18,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		[ForgeGeneratedField]
 		private Vector3 _position;
 		public event FieldEvent<Vector3> positionChanged;
-		public InterpolateVector3 positionInterpolation = new InterpolateVector3() { LerpT = 0f, Enabled = false };
+		public InterpolateVector3 positionInterpolation = new InterpolateVector3() { LerpT = 0.05f, Enabled = true };
 		public Vector3 position
 		{
 			get { return _position; }
@@ -49,7 +49,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		[ForgeGeneratedField]
 		private Quaternion _rotation;
 		public event FieldEvent<Quaternion> rotationChanged;
-		public InterpolateQuaternion rotationInterpolation = new InterpolateQuaternion() { LerpT = 0f, Enabled = false };
+		public InterpolateQuaternion rotationInterpolation = new InterpolateQuaternion() { LerpT = 0.05f, Enabled = true };
 		public Quaternion rotation
 		{
 			get { return _rotation; }

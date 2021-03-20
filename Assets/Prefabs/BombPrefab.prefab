@@ -112,6 +112,7 @@ MonoBehaviour:
   radius: 2.5
   knockbackForce: 2
   spawnerID: 0
+  destroySpawn: {fileID: 1809022330002312, guid: ed511b7776af6174e9b1255c7a81e59c, type: 3}
 --- !u!82 &1238258262508385183
 AudioSource:
   m_ObjectHideFlags: 0
