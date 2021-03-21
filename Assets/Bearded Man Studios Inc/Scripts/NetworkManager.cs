@@ -58,12 +58,24 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			DontDestroyOnLoad(gameObject);
 		}
 
+		public void ToggleAutomaticScenes(bool state)
+		{
+			automaticScenes = state;
+			if (state)
+			{
+				SceneManager.sceneLoaded += SceneReady;
+			}
+			else
+			{
+				SceneManager.sceneLoaded -= SceneReady;
+			}
+		}
 		protected virtual void OnEnable()
 		{
 			if (automaticScenes)
 				SceneManager.sceneLoaded += SceneReady;
 		}
-
+	
 		protected virtual void OnDisable()
 		{
 			if (automaticScenes)

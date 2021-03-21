@@ -5,6 +5,9 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using Utilities;
 
 namespace Networking
 {
@@ -14,8 +17,8 @@ namespace Networking
         public int PlayersInLobby = 0;
         private GameState gameState;
         private GameData activeData;
-        private List<PlayerData> players = new List<PlayerData>();
-
+        public List<PlayerData> players = new List<PlayerData>();
+        
         public GameObject lobbyUI;
         private void Start()
         {
@@ -23,6 +26,7 @@ namespace Networking
                 instance = this;
             else if(instance != this)
                 Destroy(gameObject);
+        
             
         }
 
@@ -30,58 +34,47 @@ namespace Networking
         protected override void NetworkStart()
         {
             base.NetworkStart();
+            
 
-            NetworkManager.Instance.automaticScenes = false;
+            
             if (NetworkManager.Instance.IsServer)
             {
-                networkObject.gameState = (int)GameState.Lobby;
-
+                networkObject.gameState = (int) GameState.Lobby;
                 NetworkManager.Instance.Networker.playerConnected += (player, sender) =>
                 {
-                    RegisterPlayer(player.NetworkId);
-                    PlayersInLobby++;
                     Debug.Log($"Player Joined - count:{NetworkManager.Instance.Networker.Players.Count}");
                 };
                 NetworkManager.Instance.Networker.playerDisconnected += (player, sender) =>
                 {
-                    RemovePlayer(player.NetworkId);
-                    PlayersInLobby--;
                     Debug.Log($"Player Joined - count:{NetworkManager.Instance.Networker.Players.Count}");
                 };
-                
             }
             else
             {
-                NetworkManager.Instance.Networker.playerConnected += (player, sender) =>
-                {
-                    RegisterPlayer(player.NetworkId);
-                    Debug.Log($"Player Joined - count:{NetworkManager.Instance.Networker.Players.Count}");
-                };
-                NetworkManager.Instance.Networker.playerDisconnected += (player, sender) =>
-                {
-                    RemovePlayer(player.NetworkId);
-                    Debug.Log($"Player Joined - count:{NetworkManager.Instance.Networker.Players.Count}");
-                };
+                networkObject.SendRpc(RPC_SYNC_PLAYER_LIST, Receivers.Server, JsonUtility.ToJson(GameManager.instance.PlayerData));
             }
+
         }
 
         public void StartFight()
         {
             //For testing
-            activeData.MapSelection = (int) SceneEnums.Map1;
+            activeData.MapSelection = (int)SceneEnums.Map1;
             ChangeState(GameState.Fighting);
         }
 
         public override void ChangeState(RpcArgs args)
         {
             var stateID = args.GetNext<int>();
+            var json = args.GetNext<string>();
+            var stateData = JsonUtility.FromJson<GameData>(json);
+            
+            activeData = stateData;
+            var newState = gameState = (GameState) stateID;
             if (NetworkManager.Instance.IsServer)
             {
-                networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.OthersBuffered, stateID);
-            }
-            else
-            {
-                var newState = (GameState) stateID;
+                Debug.Log($"Changing To State: {(GameState)stateID}");
+                networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.OthersBuffered, stateID, json);
                 switch (newState)
                 {
                     case GameState.Lobby:
@@ -95,45 +88,74 @@ namespace Networking
                         throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
                 }
             }
-
+            else
+            {
+                switch (newState)
+                {
+                    case GameState.Lobby:
+                        GameManager.instance.ReturnToLobby(activeData.MapSelection);
+                        lobbyUI.SetActive(true);
+                        break;
+                    case GameState.Fighting:
+                        lobbyUI.SetActive(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+                }
+            }
             
+
+        }
+
+        public override void SyncPlayerList(RpcArgs args)
+        {
+            if (NetworkManager.Instance.IsServer)
+            {
+                var playerjson = args.GetNext<string>();
+                if (!string.IsNullOrEmpty(""))
+                {
+                    var playerData = JsonUtility.FromJson<PlayerData>(playerjson);
+                
+                    if (!players.Contains(playerData))
+                        players.Add(playerData);
+    
+                }
+                
+                var json = JsonHelper.ToJson(players.ToArray());
+                networkObject.SendRpc(RPC_SYNC_PLAYER_LIST, Receivers.Others, json);
+            }
+            else
+            {
+                var json = args.GetNext<string>();
+                var serverList = JsonHelper.FromJson<PlayerData>(json);
+
+                players = new List<PlayerData>();
+                players.AddRange(serverList);
+                
+            }
         }
 
         public void ChangeState(GameState newState)
         {
-            networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.Server, (int)newState);
-        }
-        
-        private void RegisterPlayer(uint id)
-        {
-            players.Add(new PlayerData(id));
-        }
-
-        private void RemovePlayer(uint id)
-        {
-            foreach (var player in players.Where(player => player.netID == id))
-            {
-                players.Remove(player);
-                break;
-            }
-        }
-
-        private void UpdatePlayer(PlayerData data)
-        {
-            var playerJson = JsonUtility.ToJson(data);
-            networkObject.SendRpc(RPC_UPDATE_PLAYER, Receivers.Others, data);
+            var gameDataJson = JsonUtility.ToJson(activeData);
+            Debug.Log($"GhangeState - ActiveData {gameDataJson}");
+            networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.Server, (int)newState, gameDataJson);
         }
         
         
         public override void UpdatePlayer(RpcArgs args)
         {
-            var player = JsonUtility.FromJson<PlayerData>(args.GetNext<string>());
+            var json = args.GetNext<string>();
+            var player = JsonUtility.FromJson<PlayerData>(json);
             for (int i = 0; i < players.Count; i++ )
             {
-                if(players[i].netID == player.netID)
+                if (players[i].netID == player.netID)
+                {
                     players[i] = new PlayerData(player);
-                return;
+                    return;
+                }
             }
+            networkObject.SendRpc(RPC_SYNC_PLAYER_LIST, Receivers.Server, json);
         }
     }
 
@@ -157,6 +179,7 @@ namespace Networking
         public bool RepeatMap;
     }
 
+    [Serializable]
     public struct PlayerData
     {
         public uint netID;

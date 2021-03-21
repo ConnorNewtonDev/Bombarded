@@ -38,7 +38,8 @@ public class MultiplayerMenu : MonoBehaviour
 
 	private void Start()
 	{
-		ipAddress.text = "34.105.225.96";
+		GameManager.instance.PlayerData.netID = (uint)Random.Range(0, 1000);
+		ipAddress.text = "35.246.2.9";
 		
 #if UNITY_SERVER
 		ipAddress.text = "127.0.0.1";

@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"string\"][\"int\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"playerJson\"][\"stateID\"]]")]
+	[GeneratedRPC("{\"types\":[[\"string\"][\"int\", \"string\"][\"string\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"playerJson\"][\"stateID\", \"gameState\"][\"json\"]]")]
 	public abstract partial class LobbyBehavior : NetworkBehavior
 	{
 		public const byte RPC_UPDATE_PLAYER = 0 + 5;
 		public const byte RPC_CHANGE_STATE = 1 + 5;
+		public const byte RPC_SYNC_PLAYER_LIST = 2 + 5;
 		
 		public LobbyNetworkObject networkObject = null;
 
@@ -24,7 +25,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("UpdatePlayer", UpdatePlayer, typeof(string));
-			networkObject.RegisterRpc("ChangeState", ChangeState, typeof(int));
+			networkObject.RegisterRpc("ChangeState", ChangeState, typeof(int), typeof(string));
+			networkObject.RegisterRpc("SyncPlayerList", SyncPlayerList, typeof(string));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -109,8 +111,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// <summary>
 		/// Arguments:
 		/// int stateID
+		/// string gameState
 		/// </summary>
 		public abstract void ChangeState(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// string json
+		/// </summary>
+		public abstract void SyncPlayerList(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

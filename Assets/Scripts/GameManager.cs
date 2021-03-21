@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     
     
     public static GameManager instance;
+    public PlayerData PlayerData;
     private void Awake()
     {
         if (instance == null)
@@ -22,15 +23,20 @@ public class GameManager : MonoBehaviour
     public void LoadScene(GameData data)
     {
         var asyncOP = SceneManager.LoadSceneAsync(data.MapSelection, LoadSceneMode.Additive);
-        asyncOP.completed += (operation => SceneManager.SetActiveScene(SceneManager.GetSceneAt(1)));
+        asyncOP.completed += (operation => SceneManager.GetSceneByBuildIndex(data.MapSelection));
+        
     }
+    
 
     public void ReturnToLobby(int currentMap)
     {
-        var asyncOP = SceneManager.UnloadSceneAsync(currentMap);
-        SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
-
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(0)); 
+        var asyncOP = SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
     }
-    
+
+    private void FightSceneReady()
+    {
+        
+    }
  
 }
