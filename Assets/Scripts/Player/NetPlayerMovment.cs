@@ -7,7 +7,7 @@ using UnityEngine;
 public class NetPlayerMovment : MonoBehaviour
 {
     private PlayerAnimator _animator;
-    public float posDampening = 1f;
+    public float posDampening = 1F;
     public float rotDampening = 1f;
 
     private void Awake()

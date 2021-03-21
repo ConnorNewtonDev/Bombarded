@@ -7,9 +7,10 @@ namespace Bombs
 {
     public class Bomb : MonoBehaviour
     {
-        public float radius = 10.5f;
+        public float radius = 3f;
         public float knockbackForce = 1000f;
         public uint spawnerID;
+        public float damage = 10f;
         public GameObject destroySpawn;
         private AudioSource _source;
         
@@ -39,6 +40,10 @@ namespace Bombs
 
             foreach (var hit in hits)
             {
+                if (hit.transform.TryGetComponent<IDamageReceiver>(out var receiver))
+                {
+                    receiver.TakeDamage(damage);
+                }
                 if (hit.transform.CompareTag("Player"))
                 {
                     hit.transform.GetComponent<PlayerStats>().Knockback(knockbackForce, transform.position, radius);
