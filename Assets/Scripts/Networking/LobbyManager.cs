@@ -74,7 +74,7 @@ namespace Networking
             if (NetworkManager.Instance.IsServer)
             {
                 Debug.Log($"Changing To State: {(GameState)stateID}");
-                networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.OthersBuffered, stateID, json);
+                networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.Others, stateID, json);
                 switch (newState)
                 {
                     case GameState.Lobby:

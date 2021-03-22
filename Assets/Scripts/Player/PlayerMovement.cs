@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Player;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,8 +64,12 @@ public class PlayerMovement : MonoBehaviour
             if (Physics.Raycast(Camera.main.ScreenPointToRay(LookDir), out var hitInfo, Mathf.Infinity))
             {
                 var point = hitInfo.point;
-                var direction = point - transform.position;
+                var heading = point - transform.position;
+                // heading.Normalize();
+                var distance = heading.magnitude;
+                var direction = heading / distance; // This is now the normalized direction.
                 direction.y = 0;
+
                 transform.forward = direction;
             }
         }

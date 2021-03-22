@@ -10,8 +10,10 @@ public class WorldObjectSpawner : MonoBehaviour
     {
         if (NetworkManager.Instance.IsServer)
         {
-            NetworkManager.Instance.InstantiateWorldObject(0, transform.position, transform.rotation);
-            Debug.Log("SPAWN");            
+            var offset = new Vector3(0, 90 * Random.Range(0, 4), 0) ;
+            var rot = transform.rotation.eulerAngles + offset;
+            NetworkManager.Instance.InstantiateWorldObject(0, transform.position, Quaternion.Euler(rot), true);
+            Debug.Log($"SPAWN {offset}");            
         }
     }
 

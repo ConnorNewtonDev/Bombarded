@@ -20,6 +20,7 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
     void Start()
     {
         Health = _maxHealth;
+     
         if (!NetworkManager.Instance.IsServer)
             networkObject.onDestroy += DestroyEffect;
     }

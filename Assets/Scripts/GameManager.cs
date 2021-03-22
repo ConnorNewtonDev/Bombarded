@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         
         DontDestroyOnLoad(this.gameObject);
+
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void LoadScene(GameData data)

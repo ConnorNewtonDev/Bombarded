@@ -49,5 +49,5 @@ MonoBehaviour:
   PlayerNetworkObject:
   - {fileID: 7945788753132867448, guid: 3646cb69561601c46845662d3bc33255, type: 3}
   WorldObjectNetworkObject:
-  - {fileID: 2496447776478559875, guid: 6813f5a513a1be04b9f449aab2bda17e, type: 3}
+  - {fileID: 8940196845975882555, guid: f14701f16b0fefa4fa5cb03f8ac0294f, type: 3}
   automaticScenes: 1
