@@ -112,10 +112,11 @@ namespace Networking
             if (NetworkManager.Instance.IsServer)
             {
                 var playerjson = args.GetNext<string>();
-                if (!string.IsNullOrEmpty(""))
+                Debug.Log($"Server json {playerjson}");
+                if (!string.IsNullOrEmpty(playerjson))
                 {
                     var playerData = JsonUtility.FromJson<PlayerData>(playerjson);
-                
+                    
                     if (!players.Contains(playerData))
                         players.Add(playerData);
     
@@ -209,6 +210,22 @@ namespace Networking
             this.username = data.username;
             this.combatType = data.combatType;
             this.customization = data.customization;
+        }
+        
+        public static bool operator ==(PlayerData lhs, PlayerData rhs)
+        {
+            if (lhs.netID == rhs.netID && lhs.username == rhs.username && lhs.combatType == rhs.combatType && lhs.customization == rhs.customization)
+                return true;
+            else
+                return false;
+        }
+        
+        public static bool operator !=(PlayerData lhs, PlayerData rhs)
+        {
+            if (lhs.netID == rhs.netID && lhs.username == rhs.username && lhs.combatType == rhs.combatType && lhs.customization == rhs.customization)
+                return false;
+            else
+                return true;
         }
     }
 }

@@ -33,8 +33,20 @@ public class SceneStart : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        var index = LobbyManager.instance.players.IndexOf(GameManager.instance.PlayerData);
-        Transform target = playerSpawns[index].transform;
-        var spawn = NetworkManager.Instance.InstantiatePlayer(0, target.position, target.rotation);
+        var data = GameManager.instance.PlayerData;
+        // var index = LobbyManager.instance.players.IndexOf(GameManager.instance.PlayerData);
+        var players = LobbyManager.instance.players;
+        for (int i = 0; i < players.Count; i++)
+        {
+            Debug.Log($"Player : {players[i]} / {data}");
+            if (players[i] == data)
+            {
+                Debug.Log($"Player Index : {i}");
+                Transform target = playerSpawns[i].transform;
+                var spawn = NetworkManager.Instance.InstantiatePlayer(0, target.position, target.rotation);
+                return;
+            }
+        }
     }
+
 }
