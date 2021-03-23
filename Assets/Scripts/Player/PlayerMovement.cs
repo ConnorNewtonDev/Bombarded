@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
     private void ApplyLook()
     {
         if (_controlScheme == ControlScheme.KeyboardMouse)
-        {
+        {   
             if (Physics.Raycast(Camera.main.ScreenPointToRay(LookDir), out var hitInfo, Mathf.Infinity))
             {
                 var point = hitInfo.point;

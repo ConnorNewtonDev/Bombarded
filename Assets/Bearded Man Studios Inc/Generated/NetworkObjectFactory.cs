@@ -23,6 +23,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				switch (identity)
 				{
+					case FightManagerNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new FightManagerNetworkObject(networker, id, frame);
+						break;
 					case LobbyNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new LobbyNetworkObject(networker, id, frame);

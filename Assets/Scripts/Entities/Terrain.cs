@@ -55,8 +55,11 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
         meshRenderer.material = state.material;
         if (healthStates[_currentState].transitionOutEffect != null)
         {
-            var effect = Instantiate(healthStates[_currentState].transitionOutEffect, transform.position, transform.rotation, null);
-            Destroy(effect, 5f);
+            MainThreadManager.Run(() =>
+            {
+                var effect = Instantiate(healthStates[_currentState].transitionOutEffect, transform.position, transform.rotation, null);
+                Destroy(effect, 5f);
+            });
         }
 
         
@@ -86,7 +89,11 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
         //     effect.transform.localPosition += Vector3.one * 2.5f;
         //     Destroy(effect, 3f);
         // }
-        Destroy(gameObject);
+        MainThreadManager.Run(() =>
+        {
+            Destroy(gameObject);    
+        });
+        
     }
     
     [System.Serializable]

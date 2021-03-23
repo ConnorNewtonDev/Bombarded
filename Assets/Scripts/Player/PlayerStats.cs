@@ -136,6 +136,7 @@ namespace Player
                 _movement.ToggleRigidbodyMode(false);
                 knockedUp = false;
             }
+            
         }
         
     }

@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Generated;
 using Networking;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
-    
-    
     public static GameManager instance;
     public PlayerData PlayerData;
+    public PlayerBehavior player;
     private void Awake()
     {
         if (instance == null)
@@ -19,7 +20,6 @@ public class GameManager : MonoBehaviour
         
         DontDestroyOnLoad(this.gameObject);
 
-        Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void LoadScene(GameData data)

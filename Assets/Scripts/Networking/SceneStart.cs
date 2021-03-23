@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 public class SceneStart : MonoBehaviour
 {
     public GameObject spawners;
+    public GameObject killbox;
     public PlayerSpawnLoc[] playerSpawns;
     private void Start()
     {
@@ -19,22 +20,24 @@ public class SceneStart : MonoBehaviour
         if (!NetworkManager.Instance.IsServer)
         {
             SpawnPlayer();
+            killbox.SetActive(true);
             return;
         }
         else
-        {
+        {        
+            NetworkManager.Instance.InstantiateFightManager(0);
 #if UNITY_EDITOR
             SpawnPlayer();
 #endif
         }
         
         spawners.SetActive(true);
+
     }
 
     private void SpawnPlayer()
     {
         var data = GameManager.instance.PlayerData;
-        // var index = LobbyManager.instance.players.IndexOf(GameManager.instance.PlayerData);
         var players = LobbyManager.instance.players;
         for (int i = 0; i < players.Count; i++)
         {
@@ -43,7 +46,8 @@ public class SceneStart : MonoBehaviour
             {
                 Debug.Log($"Player Index : {i}");
                 Transform target = playerSpawns[i].transform;
-                var spawn = NetworkManager.Instance.InstantiatePlayer(0, target.position, target.rotation);
+                GameManager.instance.player = NetworkManager.Instance.InstantiatePlayer(0, target.position, target.rotation);
+                
                 return;
             }
         }
