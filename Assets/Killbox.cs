@@ -10,11 +10,11 @@ using UnityEngine.InputSystem;
 
 public class Killbox : MonoBehaviour
 {
-
+    
     private void OnTriggerEnter(Collider other)
     {
     
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("LocalPlayer"))
         {
             FightManager.instance.PlayerDied(GameManager.instance.PlayerData.netID);
             Debug.Log("Respawn");                

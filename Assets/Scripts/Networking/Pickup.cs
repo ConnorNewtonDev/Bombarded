@@ -15,10 +15,10 @@ namespace Networking
             if (taken)
                 return;
             
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("LocalPlayer"))
             {
                 var pStats = other.GetComponent<PlayerStats>();
-                if (pStats.networkObject.IsOwner && !pStats.IsHoldingBomb())
+                if (!pStats.IsHoldingBomb())
                 {
                     taken = true;
                     pStats.SetHeldBomb((int)bombType);

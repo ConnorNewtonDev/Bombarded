@@ -45,6 +45,7 @@ namespace Networking
         protected override void NetworkStart()
         {
             base.NetworkStart();
+            networkObject.onDestroy += Destroy;
             GenerateScores();
         }
 
@@ -238,10 +239,12 @@ namespace Networking
             
         }
 
-        private void OnDestroy()
+        private void Destroy(NetWorker netWorker)
         {
             if (instance == this)
                 instance = null;
+            
+            Destroy(gameObject);
         }
     }
     

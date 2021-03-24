@@ -44,9 +44,9 @@ namespace Bombs
                 {
                     receiver.TakeDamage(damage);
                 }
-                if (hit.transform.CompareTag("Player"))
+                if (hit.transform.TryGetComponent<PlayerStats>(out var player))
                 {
-                    hit.transform.GetComponent<PlayerStats>().Knockback(knockbackForce, transform.position, radius);
+                    player.Knockback(knockbackForce, transform.position, radius);
                 }
             }
 
@@ -59,8 +59,8 @@ namespace Bombs
 
         private void SpawnEffect()
         {
-            var effect = Instantiate(destroySpawn, transform.position, transform.rotation, null);
-            Destroy(effect, 5f);
+            var effect = Instantiate(destroySpawn, transform.position , transform.rotation, null);
+            Destroy(effect, 1.5f);
         }
         
     }

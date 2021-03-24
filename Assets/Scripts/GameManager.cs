@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
     public void ReturnToLobby(int currentMap)
     {
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(0)); 
+        SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
         LobbyManager.instance.lobbyReturned?.Invoke();
-        var asyncOP = SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
     }
 
     private void FightSceneReady()

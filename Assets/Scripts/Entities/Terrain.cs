@@ -57,7 +57,7 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
         {
             MainThreadManager.Run(() =>
             {
-                var effect = Instantiate(healthStates[_currentState].transitionOutEffect, transform.position, transform.rotation, null);
+                var effect = Instantiate(healthStates[_currentState].transitionOutEffect, transform.position + new Vector3(2.5f, 2.5f, 2.5f), transform.rotation, null);
                 Destroy(effect, 5f);
             });
         }

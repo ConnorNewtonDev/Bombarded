@@ -8,7 +8,6 @@ namespace UI
         public void ButtonPressed()
         {
             FightManager.instance.networkObject.Destroy();
-            Destroy(FightManager.instance.gameObject);
             LobbyManager.instance.ChangeState(GameState.Lobby);
         }
     }

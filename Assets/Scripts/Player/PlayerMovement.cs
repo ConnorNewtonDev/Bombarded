@@ -125,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller.enabled = !state;
         _rb3d.isKinematic = !state;
-
+        GetComponent<CapsuleCollider>().enabled = state;
     }
 
     enum ControlScheme

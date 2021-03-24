@@ -29,7 +29,7 @@ namespace Player
         protected override void NetworkStart()
         {
             base.NetworkStart();
-
+            gameObject.tag = networkObject.IsOwner ? "LocalPlayer" : "Player";
             if (networkObject.IsOwner)
             {
                 _movement.enabled = true;
@@ -50,11 +50,18 @@ namespace Player
             {
                 networkObject.position = transform.position;
                 networkObject.rotation = transform.rotation;
+
+                // if (transform.position.y <= -20)
+                // {
+                //     FightManager.instance.PlayerDied(GameManager.instance.PlayerData.netID);
+                //     Debug.Log("Respawn Safety");
+                // }
             }
             else if(_netMovement)
             {
                 if(!knockedUp)
                     _netMovement.UpdatePositionAndRotation(networkObject.position, networkObject.rotation);
+                
             }
         }
 
@@ -104,7 +111,6 @@ namespace Player
             var force = args.GetNext<float>();
             var origin = args.GetNext<Vector3>();
             var radius = args.GetNext<float>();
-
             if (networkObject.IsOwner)
             {
                 _movement.ToggleRigidbodyMode(true);
@@ -112,7 +118,6 @@ namespace Player
                 dir.Normalize();
                 dir.y = 0.5f;
                 _rb3d.AddForce(dir * force, ForceMode.VelocityChange);
-              
                 networkObject.SendRpc(RPC_KNOCKBACK, Receivers.Others, force, origin, radius);
             }
             else if (!networkObject.IsServer)
@@ -123,9 +128,13 @@ namespace Player
                 dir.y = 0.5f;
                 _rb3d.AddForce(dir * force, ForceMode.VelocityChange);
             }
-
+        
             knockedUp = true;
-
+            LeanTween.delayedCall(3,() =>
+            {
+                _movement.ToggleRigidbodyMode(false);
+                knockedUp = false;
+            });
             // Set knockback animation
         }
 
@@ -134,6 +143,7 @@ namespace Player
             if (knockedUp)
             {
                 _movement.ToggleRigidbodyMode(false);
+                LeanTween.cancel(gameObject);
                 knockedUp = false;
             }
             
