@@ -110,7 +110,7 @@
                     "id": "1e3a743d-cdbf-4ead-9e01-e5d61ff3f4c9",
                     "path": "<Pointer>/position",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "NormalizeVector2",
                     "groups": "Keyboard&Mouse",
                     "action": "Look",
                     "isComposite": false,

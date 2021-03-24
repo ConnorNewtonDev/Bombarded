@@ -329,6 +329,7 @@ MonoBehaviour:
     username: 
     combatType: 0
     customization: 0
+  player: {fileID: 0}
 --- !u!4 &453571676
 Transform:
   m_ObjectHideFlags: 0

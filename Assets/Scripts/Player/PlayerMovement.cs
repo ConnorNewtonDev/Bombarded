@@ -60,17 +60,17 @@ public class PlayerMovement : MonoBehaviour
     private void ApplyLook()
     {
         if (_controlScheme == ControlScheme.KeyboardMouse)
-        {   
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(LookDir), out var hitInfo, Mathf.Infinity))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit))
             {
-                var point = hitInfo.point;
-                var heading = point - transform.position;
-                // heading.Normalize();
-                var distance = heading.magnitude;
-                var direction = heading / distance; // This is now the normalized direction.
-                direction.y = 0;
+                var point = hit.point;
+                // Debug.DrawLine (ray.origin, hit.point)
+                var heading = (point -transform.position).normalized;
+                heading.y = 0;
 
-                transform.forward = direction;
+                transform.forward = heading;
             }
         }
         else

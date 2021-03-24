@@ -4,11 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"playerID\"]]")]
+	[GeneratedRPC("{\"types\":[[\"uint\"][\"int\"][\"string\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"playerID\"][\"winner\"][\"scoresJson\"]]")]
 	public abstract partial class FightManagerBehavior : NetworkBehavior
 	{
 		public const byte RPC_PLAYER_DIED = 0 + 5;
+		public const byte RPC_FIGHT_WON = 1 + 5;
+		public const byte RPC_SYNC_SCORES = 2 + 5;
 		
 		public FightManagerNetworkObject networkObject = null;
 
@@ -23,6 +25,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("PlayerDied", PlayerDied, typeof(uint));
+			networkObject.RegisterRpc("FightWon", FightWon, typeof(int));
+			networkObject.RegisterRpc("SyncScores", SyncScores, typeof(string));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -104,6 +108,16 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// uint playerID
 		/// </summary>
 		public abstract void PlayerDied(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// int winner
+		/// </summary>
+		public abstract void FightWon(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// string scoresJson
+		/// </summary>
+		public abstract void SyncScores(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

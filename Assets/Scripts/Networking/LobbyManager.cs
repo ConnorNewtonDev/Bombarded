@@ -18,9 +18,12 @@ namespace Networking
         private GameState gameState;
         private GameData activeData;
         public List<PlayerData> players = new List<PlayerData>();
+
+        public UnityEvent lobbyToBackground;
+        public UnityEvent lobbyReturned;
         
         public GameObject lobbyUI;
-        private void Start()
+        private void Awake()
         {
             if (instance == null)
                 instance = this;
@@ -79,14 +82,15 @@ namespace Networking
                 {
                     case GameState.Lobby:
                         GameManager.instance.ReturnToLobby(activeData.MapSelection);
-                        lobbyUI.SetActive(true);
+                        lobbyReturned?.Invoke();
                         break;
                     case GameState.Fighting:
+                        lobbyToBackground?.Invoke();
                         GameManager.instance.LoadScene(activeData);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-                }
+               }
             }
             else
             {
@@ -94,15 +98,20 @@ namespace Networking
                 {
                     case GameState.Lobby:
                         GameManager.instance.ReturnToLobby(activeData.MapSelection);
+                        lobbyReturned?.Invoke();
                         lobbyUI.SetActive(true);
                         break;
                     case GameState.Fighting:
+                        lobbyToBackground?.Invoke();
                         lobbyUI.SetActive(false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
                 }
             }
+            
+            
+            
             
 
         }
