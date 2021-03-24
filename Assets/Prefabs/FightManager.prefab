@@ -1580,6 +1580,7 @@ MonoBehaviour:
   playerUI: {fileID: 8662442728205222233, guid: 691a25f610f4cf4478e40e0d88209e52, type: 3}
   playerWin: {fileID: 792100520}
   bombardedWin: {fileID: 349727664}
+  winnerLabel: {fileID: 1954825538}
   OnPlayerDied:
     m_PersistentCalls:
       m_Calls: []

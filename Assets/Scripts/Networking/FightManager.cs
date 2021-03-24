@@ -4,6 +4,7 @@ using System.Linq;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,7 +22,7 @@ namespace Networking
         [SerializeField] private GameObject playerUI;
         [SerializeField] private GameObject playerWin;
         [SerializeField] private GameObject bombardedWin;
-        
+        [SerializeField] private TMP_Text winnerLabel;
         public UnityEvent OnPlayerDied;
         public UnityEvent OnFightEnd;
 
@@ -197,6 +198,7 @@ namespace Networking
             else
             {
                 // Show Winning Player
+                winnerLabel.text = $"Player {winner + 1}";
                 playerWin.SetActive(true);
             }
         }

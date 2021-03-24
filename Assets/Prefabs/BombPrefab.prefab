@@ -110,9 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 4
-  knockbackForce: 2
+  knockbackForce: 2.8
   spawnerID: 0
-  damage: 10
+  damage: 20
   destroySpawn: {fileID: 1809022330002312, guid: ed511b7776af6174e9b1255c7a81e59c, type: 3}
 --- !u!82 &1238258262508385183
 AudioSource:

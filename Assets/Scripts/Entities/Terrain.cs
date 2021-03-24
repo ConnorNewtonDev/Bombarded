@@ -7,8 +7,11 @@ using UnityEngine.XR;
 
 public class Terrain : WorldObjectBehavior, IDamageReceiver
 {
-
-    public float Health;
+    public float Health
+    {
+        get { return networkObject.health;}
+        private set { networkObject.health = value; }
+    }
     public TerrainState[] healthStates;
     public MeshRenderer meshRenderer;
     public GameObject destroyEffect;
@@ -23,26 +26,25 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
      
         if (!NetworkManager.Instance.IsServer)
             networkObject.onDestroy += DestroyEffect;
+
+        networkObject.healthChanged += CheckState;
     }
     
 
     public void TakeDamage(float value)
     {
         Health -= value;
-        networkObject.health = Health;
-        CheckState();
-
     }
 
-    private void CheckState()
+    private void CheckState(float value, ulong timestep)
     {
-        if (Health <= 0)
+        if (value <= 0)
         {
             DestroyTerrain();
             return;
         }
         
-        var percent = (Health / _maxHealth) * 100;
+        var percent = (value / _maxHealth) * 100;
         if (percent < healthStates[_currentState].minThreshhold)
         {
             networkObject.SendRpc(RPC_CHANGE_STATE, Receivers.All, _currentState+1);
@@ -89,6 +91,9 @@ public class Terrain : WorldObjectBehavior, IDamageReceiver
         //     effect.transform.localPosition += Vector3.one * 2.5f;
         //     Destroy(effect, 3f);
         // }
+        networkObject.onDestroy -= DestroyEffect;
+        networkObject.healthChanged -= CheckState;
+        
         MainThreadManager.Run(() =>
         {
             Destroy(gameObject);    
